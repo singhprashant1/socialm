@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socialm/homepage.dart';
 import 'package:toast/toast.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 import 'SizedBox.dart';
 
 class ResisterPage extends StatefulWidget {
@@ -27,30 +27,29 @@ class _ResisterPageState extends State<ResisterPage> {
     _formKey.currentState.save();
   }
 
+  DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   void createData() async {
-    // final databaseReference = FirebaseDatabase.instance.reference();
-    // FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    try{
-
-     await FirebaseDatabase.instance.reference().child("Cust").set({
-      "name": "name",
-      "number": "name",
+    await Firebase.initializeApp();
+    User user = FirebaseAuth.instance.currentUser;
+    databaseReference.child("Cust").child(user.uid).set({
+      "name": nameController.text,
+      "username": userController.text,
+      "email": emailController.text,
+      "uid": user.uid
     });
-    // Constants.prefs.setBool("loggedIn", true);
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => HomePage()),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProfilePage()),
+    );
   }
-    } on PlatformException catch (error, stackTrace) {
-      print("error: $error");
-    }
-  }
-      
 
   @override
   void initState() {
     super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });
   }
 
   @override
@@ -229,9 +228,8 @@ class _ResisterPageState extends State<ResisterPage> {
                                 TextStyle(color: Colors.white, fontSize: 20.0),
                           ),
                           onPressed: () {
-                            createData();
-                            // _submit();
-                            // signUp();
+                            _submit();
+                            signUp();
                           },
                           splashColor: Colors.redAccent,
                         ),
@@ -277,11 +275,11 @@ class _ResisterPageState extends State<ResisterPage> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       try {
-        final FirebaseUser user = (await FirebaseAuth.instance
-                .createUserWithEmailAndPassword(
-                    email: emailController.text,
-                    password: repassController.text))
-            .user;
+        UserCredential user = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text, password: repassController.text);
+
+        createData();
       } catch (e) {
         print(e.message);
         Toast.show(e.message, context,

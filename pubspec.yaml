@@ -31,11 +31,11 @@ dependencies:
   google_fonts:
   hexcolor:
   image_picker:
-  firebase_auth:
+  firebase_auth: ^0.18.4+1
   toast:
-  firebase_database: ^3.1.6
-  firebase_core: ^0.4.4+3
-  firebase_storage: 
+  firebase_database: ^4.4.0
+  firebase_core: ^0.5.3
+  firebase_storage: ^5.2.0
 
 dev_dependencies:
   flutter_test:
