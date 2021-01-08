@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "911876382735",
+    "firebase_url": "https://isocial-d58ed-default-rtdb.firebaseio.com",
+    "project_id": "isocial-d58ed",
+    "storage_bucket": "isocial-d58ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911876382735:android:ee999147cc093cfb86437a",
+        "android_client_info": {
+          "package_name": "com.example.socialm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911876382735-jkcluomvhlrh3hguecdpbs52u5d6acsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvcZXldCVVipkU86SGenvTs0r9yxtNTf0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911876382735-jkcluomvhlrh3hguecdpbs52u5d6acsg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
