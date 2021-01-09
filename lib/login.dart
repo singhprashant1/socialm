@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:socialm/constent.dart';
 import 'package:socialm/homepage.dart';
 import 'package:socialm/register.dart';
 import 'package:toast/toast.dart';
@@ -192,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
         UserCredential user = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: emailController.text, password: passController.text);
-
+        Constants.prefs.setBool("loggedIn", true);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ProfilePage()));
       } catch (e) {

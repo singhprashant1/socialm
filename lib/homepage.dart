@@ -1,9 +1,15 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socialm/SizedBox.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:socialm/constent.dart';
+import 'package:socialm/login.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -33,17 +39,86 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  var name;
+  var username;
+  // DatabaseReference user = FirebaseDatabase.instance.reference();
+  void readData() async {
+    final db = FirebaseDatabase.instance.reference().child("Cust");
+    User user = FirebaseAuth.instance.currentUser;
+    db
+        .orderByChild("uid")
+        .equalTo(user.uid)
+        .once()
+        .then((DataSnapshot snapshot) {
+      snapshot.value.forEach((key, values) {
+        setState(() {
+          name = values["name"];
+          username = values["username"];
+          print(values["name"]);
+        });
+      });
+    });
+  }
+
+  Future<void> _logout() async {
+    try {
+      Constants.prefs.setBool("loggedIn", false);
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      readData();
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Stack(
-          children: <Widget>[
-            Container(child: menu(context)),
-            Container(child: dashboard(context)),
-          ],
+    return WillPopScope(
+      onWillPop: () {
+        return showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm Exit"),
+                content: Text("Are you sure you want to exit?"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("YES"),
+                    onPressed: () {
+                      SystemNavigator.pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("NO"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
+      },
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Stack(
+            children: <Widget>[
+              Container(child: menu(context)),
+              Container(child: dashboard(context)),
+            ],
+          ),
         ),
       ),
     );
@@ -97,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              "Username",
+              username != null ? "" + username.toString() : "loading",
               style: GoogleFonts.montserrat(
                 textStyle: TextStyle(color: Colors.black, fontSize: 22),
               ),
@@ -109,10 +184,15 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.grey,
             ),
             SizedBox(height: SizeConfig.blockSizeVertical * 2),
-            Text(
-              "Sign Out",
-              style: GoogleFonts.montserrat(
-                textStyle: TextStyle(color: Colors.black, fontSize: 22),
+            GestureDetector(
+              onTap: () {
+                _logout();
+              },
+              child: Text(
+                "Sign Out",
+                style: GoogleFonts.montserrat(
+                  textStyle: TextStyle(color: Colors.black, fontSize: 22),
+                ),
               ),
             ),
           ],
@@ -140,7 +220,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      "UserName",
+                      username != null
+                          ? "" + username.toString()
+                          : "loading", //username
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(color: Colors.black, fontSize: 22),
                       ),
@@ -266,7 +348,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Full name",
+                      name != null ? "" + name.toString() : "loading",
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                           color: Colors.black,
