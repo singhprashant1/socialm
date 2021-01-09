@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:socialm/homepage.dart';
 import 'package:socialm/register.dart';
+import 'package:toast/toast.dart';
 
 import 'SizedBox.dart';
 
@@ -21,6 +25,15 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     _formKey1.currentState.save();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });
   }
 
   @override
@@ -124,6 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           onPressed: () {
                             _submit();
+                            signIn();
                           },
                           splashColor: Colors.redAccent,
                         ),
@@ -168,5 +182,24 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<void> signIn() async {
+    final formState = _formKey1.currentState;
+    if (formState.validate()) {
+      formState.save();
+      try {
+        UserCredential user = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: emailController.text, password: passController.text);
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProfilePage()));
+      } catch (e) {
+        print(e.message);
+        Toast.show(e.message, context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+      }
+    }
   }
 }
