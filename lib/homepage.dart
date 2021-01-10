@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -37,6 +38,20 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _image = image;
     });
+  }
+
+  Reference storageReference = FirebaseStorage.instance.ref();
+  void addImageToFirebase() async {
+    //CreateRefernce to path.
+    Reference ref = storageReference.child("yourstorageLocation/");
+
+    //StorageUpload task is used to put the data you want in storage
+    //Make sure to get the image first before calling this method otherwise _image will be null.
+
+    UploadTask storageUploadTask = ref.child("image1.jpg").putFile(_image);
+
+    final String url = await ref.getDownloadURL();
+    print("The download URL is " + url);
   }
 
   var name;
