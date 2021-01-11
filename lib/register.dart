@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socialm/homepage.dart';
+import 'package:socialm/login.dart';
 import 'package:toast/toast.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'SizedBox.dart';
@@ -37,9 +38,10 @@ class _ResisterPageState extends State<ResisterPage> {
       "email": emailController.text,
       "uid": user.uid
     });
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProfilePage()),
+      MaterialPageRoute(builder: (context) => LoginPage()),
     );
   }
 

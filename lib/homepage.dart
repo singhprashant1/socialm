@@ -38,10 +38,16 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _image = image;
     });
+    if (_image != null) {
+      addImageToFirebase(_image);
+    } else {
+      print("image is empty");
+    }
   }
 
+  DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   Reference storageReference = FirebaseStorage.instance.ref();
-  void addImageToFirebase() async {
+  Future addImageToFirebase(File _image) async {
     //CreateRefernce to path.
     Reference ref = storageReference.child("yourstorageLocation/");
 
@@ -49,13 +55,21 @@ class _ProfilePageState extends State<ProfilePage> {
     //Make sure to get the image first before calling this method otherwise _image will be null.
 
     UploadTask storageUploadTask = ref.child("image1.jpg").putFile(_image);
-
-    final String url = await ref.getDownloadURL();
-    print("The download URL is " + url);
+    TaskSnapshot taskSnapshot = await storageUploadTask;
+    var imageUrl = await (await storageUploadTask).ref.getDownloadURL();
+    String url = imageUrl.toString();
+    print(url);
+    User user = FirebaseAuth.instance.currentUser;
+    databaseReference.child("Cust").child(user.uid).update({
+      "link": url,
+    });
+    // String url = await ref.getDownloadURL();
+    // print("The download URL is " + url);
   }
 
   var name;
   var username;
+  var link;
   // DatabaseReference user = FirebaseDatabase.instance.reference();
   void readData() async {
     final db = FirebaseDatabase.instance.reference().child("Cust");
@@ -69,6 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           name = values["name"];
           username = values["username"];
+          link = values["link"];
           print(values["name"]);
         });
       });
@@ -274,10 +289,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey,
-                    child: _image != null
+                    child: link != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: Image.file(_image,
+                            child: Image.network(link,
                                 width: 100, height: 100, fit: BoxFit.fill),
                           )
                         : Container(
