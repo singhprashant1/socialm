@@ -29,6 +29,12 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _image = image;
     });
+    if (_image != null) {
+      addImageToFirebase(_image);
+      readData();
+    } else {
+      print("image is empty");
+    }
   }
 
   Future _imgFromGallery() async {
@@ -40,6 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     if (_image != null) {
       addImageToFirebase(_image);
+      readData();
     } else {
       print("image is empty");
     }
