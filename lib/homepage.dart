@@ -30,22 +30,25 @@ class _ProfilePageState extends State<ProfilePage> {
       _image = image;
     });
     if (_image != null) {
-      addImageToFirebase(_image);
+      addImageToFirebase(_image, imagepath);
       readData();
     } else {
       print("image is empty");
     }
   }
 
+  String imagepath;
   Future _imgFromGallery() async {
     final image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
 
     setState(() {
       _image = image;
+      imagepath = image.path.split('/').last;
+      print(imagepath);
     });
     if (_image != null) {
-      addImageToFirebase(_image);
+      addImageToFirebase(_image, imagepath);
       readData();
     } else {
       print("image is empty");
@@ -54,14 +57,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   Reference storageReference = FirebaseStorage.instance.ref();
-  Future addImageToFirebase(File _image) async {
+  Future addImageToFirebase(File _image, String imagepath) async {
     //CreateRefernce to path.
     Reference ref = storageReference.child("yourstorageLocation/");
 
     //StorageUpload task is used to put the data you want in storage
     //Make sure to get the image first before calling this method otherwise _image will be null.
 
-    UploadTask storageUploadTask = ref.child("image1.jpg").putFile(_image);
+    UploadTask storageUploadTask = ref.child(imagepath).putFile(_image);
     TaskSnapshot taskSnapshot = await storageUploadTask;
     var imageUrl = await (await storageUploadTask).ref.getDownloadURL();
     String url = imageUrl.toString();
@@ -70,6 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
     databaseReference.child("Cust").child(user.uid).update({
       "link": url,
     });
+    readData();
     // String url = await ref.getDownloadURL();
     // print("The download URL is " + url);
   }
