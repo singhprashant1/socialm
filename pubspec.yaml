@@ -31,11 +31,11 @@ dependencies:
   google_fonts:
   hexcolor:
   image_picker:
-  firebase_auth: ^0.18.4+1
+  firebase_auth:
   toast:
-  firebase_database: ^4.4.0
-  firebase_core: ^0.5.3
-  firebase_storage: ^5.2.0
+  firebase_database:
+  firebase_core:
+  firebase_storage:
   shared_preferences: ^0.5.12+4
 
 dev_dependencies:
