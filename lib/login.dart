@@ -186,13 +186,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> signIn() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
     final formState = _formKey1.currentState;
     if (formState.validate()) {
       formState.save();
       try {
-        UserCredential user = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-                email: emailController.text, password: passController.text);
+        UserCredential user = await auth.signInWithEmailAndPassword(
+            email: emailController.text, password: passController.text);
+
         Constants.prefs.setBool("loggedIn", true);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ProfilePage()));

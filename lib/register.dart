@@ -237,7 +237,12 @@ class _ResisterPageState extends State<ResisterPage> {
                         ),
                         SizedBox(height: SizeConfig.blockSizeVertical * 2),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage()));
+                          },
                           child: RichText(
                             text: TextSpan(
                               text: "Already have an account yet?",

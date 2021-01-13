@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -59,12 +58,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Reference storageReference = FirebaseStorage.instance.ref();
   Future addImageToFirebase(File _image, String imagepath) async {
     //CreateRefernce to path.
-    Reference ref = storageReference.child("yourstorageLocation/");
+    Reference ref = storageReference.child("Profilepic");
 
     //StorageUpload task is used to put the data you want in storage
     //Make sure to get the image first before calling this method otherwise _image will be null.
 
-    UploadTask storageUploadTask = ref.child(imagepath).putFile(_image);
+    UploadTask storageUploadTask = ref.child(username).putFile(_image);
     TaskSnapshot taskSnapshot = await storageUploadTask;
     var imageUrl = await (await storageUploadTask).ref.getDownloadURL();
     String url = imageUrl.toString();
