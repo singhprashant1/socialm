@@ -19,6 +19,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool isCollapsed = true;
   bool _visible = true;
+  var _loading = false;
   final Duration duration = const Duration(milliseconds: 300);
   File _image;
   Future _imgFromCamera() async {
@@ -73,6 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
       "link": url,
     });
     readData();
+
     // String url = await ref.getDownloadURL();
     // print("The download URL is " + url);
   }
@@ -94,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
           name = values["name"];
           username = values["username"];
           link = values["link"];
+          // _loading = !_loading;
           print(values["name"]);
         });
       });
@@ -176,6 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       leading: new Icon(Icons.photo_library),
                       title: new Text('Photo Library'),
                       onTap: () {
+                        _loading = !_loading;
                         _imgFromGallery();
                         Navigator.of(context).pop();
                       }),
@@ -305,18 +309,20 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: Image.network(link,
                                 width: 100, height: 100, fit: BoxFit.fill),
                           )
-                        : Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(50)),
-                            width: 100,
-                            height: 100,
-                            child: Icon(
-                              Icons.person,
-                              size: 40,
-                              color: Colors.grey[800],
-                            ),
-                          ),
+                        : _loading != true
+                            ? Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(50)),
+                                width: 100,
+                                height: 100,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: Colors.grey[800],
+                                ),
+                              )
+                            : _circulerprogressIndicator(),
                   ),
                 ),
                 SizedBox(
@@ -417,7 +423,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           side: BorderSide(color: Colors.black)),
-                      onPressed: () {},
+                      onPressed: () {
+                        _loading = !_loading;
+                      },
                       child: Text(
                         "Edit Profile",
                         style: GoogleFonts.montserrat(
@@ -437,4 +445,8 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+}
+
+Widget _circulerprogressIndicator() {
+  return CircularProgressIndicator();
 }
