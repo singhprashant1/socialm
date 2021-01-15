@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:socialm/SizedBox.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialm/constent.dart';
@@ -20,6 +21,8 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isCollapsed = true;
   bool _visible = true;
   var _loading = false;
+  bool _enabled = true;
+
   final Duration duration = const Duration(milliseconds: 300);
   File _image;
   Future _imgFromCamera() async {
@@ -98,6 +101,11 @@ class _ProfilePageState extends State<ProfilePage> {
           link = values["link"];
           // _loading = !_loading;
           print(values["name"]);
+          setState(() {
+            if (username != null) {
+              _enabled = false;
+            }
+          });
         });
       });
     });
@@ -215,10 +223,17 @@ class _ProfilePageState extends State<ProfilePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              username != null ? "" + username.toString() : "loading",
-              style: GoogleFonts.montserrat(
-                textStyle: TextStyle(color: Colors.black, fontSize: 22),
+            Shimmer.fromColors(
+              baseColor: _enabled ? Colors.grey : Colors.black,
+              highlightColor: _enabled ? Colors.lightBlue : Colors.black,
+              enabled: _enabled,
+              child: Text(
+                username != null
+                    ? "" + username.toString()
+                    : "loading", //username
+                style: GoogleFonts.montserrat(
+                  textStyle: TextStyle(color: Colors.black, fontSize: 22),
+                ),
               ),
             ),
             SizedBox(height: SizeConfig.blockSizeVertical * 1),
@@ -263,12 +278,19 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text(
-                      username != null
-                          ? "" + username.toString()
-                          : "loading", //username
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(color: Colors.black, fontSize: 22),
+                    Shimmer.fromColors(
+                      baseColor: _enabled ? Colors.grey : Colors.black,
+                      highlightColor:
+                          _enabled ? Colors.lightBlue : Colors.black,
+                      enabled: _enabled,
+                      child: Text(
+                        username != null
+                            ? "" + username.toString()
+                            : "loading", //username
+                        style: GoogleFonts.montserrat(
+                          textStyle:
+                              TextStyle(color: Colors.black, fontSize: 22),
+                        ),
                       ),
                     ),
                     InkWell(
@@ -393,12 +415,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name != null ? "" + name.toString() : "loading",
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
+                    Shimmer.fromColors(
+                      baseColor: _enabled ? Colors.grey : Colors.black,
+                      highlightColor:
+                          _enabled ? Colors.lightBlue : Colors.black,
+                      enabled: _enabled,
+                      child: Text(
+                        name != null
+                            ? "" + name.toString()
+                            : "loading", //username
+                        style: GoogleFonts.montserrat(
+                          textStyle:
+                              TextStyle(color: Colors.black, fontSize: 22),
                         ),
                       ),
                     ),
