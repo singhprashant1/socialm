@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socialm/bottam%20navigation.dart';
 import 'package:socialm/homepage.dart';
 import 'package:socialm/login.dart';
 
@@ -14,7 +15,7 @@ Future main() async {
   runApp(MaterialApp(
     title: 'Weather',
     home: Constants.prefs.getBool("loggedIn") == true
-        ? ProfilePage()
+        ? BottamNavy()
         : LoginPage(),
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
@@ -22,7 +23,7 @@ Future main() async {
     ),
     routes: {
       "/logout": (context) => LoginPage(),
-      "/home": (context) => ProfilePage(),
+      "/home": (context) => BottamNavy(),
     },
   ));
 }
