@@ -436,7 +436,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             : "loading", //username
                         style: GoogleFonts.montserrat(
                           textStyle:
-                              TextStyle(color: Colors.black, fontSize: 22),
+                              TextStyle(color: Colors.black, fontSize: 16),
                         ),
                       ),
                     ),
@@ -446,7 +446,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: GoogleFonts.montserrat(
                           textStyle: TextStyle(
                             color: Colors.black,
-                            fontSize: 20,
+                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -476,7 +476,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     Container(
-                        height: SizeConfig.blockSizeVertical * 44,
+                        height: SizeConfig.blockSizeVertical * 46,
                         width: SizeConfig.blockSizeHorizontal * 90,
                         // decoration: BoxDecoration(border: Border.all(width: 2)),
                         // padding: EdgeInsets.all(5),
