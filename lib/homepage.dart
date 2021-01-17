@@ -25,6 +25,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final Duration duration = const Duration(milliseconds: 300);
   File _image;
+  List imagearry = [];
+  Future _imgFromGalary() async {
+    final image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50);
+    imagearry.add(image);
+    setState(() {
+      imagearry;
+    });
+  }
+
   Future _imgFromCamera() async {
     final image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
@@ -453,6 +463,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           side: BorderSide(color: Colors.black)),
                       onPressed: () {
                         _loading = !_loading;
+                        _imgFromGalary();
                       },
                       child: Text(
                         "Edit Profile",
@@ -463,7 +474,35 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                    )
+                    ),
+                    Container(
+                        height: SizeConfig.blockSizeVertical * 44,
+                        width: SizeConfig.blockSizeHorizontal * 90,
+                        // decoration: BoxDecoration(border: Border.all(width: 2)),
+                        // padding: EdgeInsets.all(5),
+                        child: imagearry.isEmpty
+                            ? Center(child: Text("No image"))
+                            : GridView.count(
+                                crossAxisCount: 3,
+                                children:
+                                    List.generate(imagearry.length, (index) {
+                                  var img = imagearry[index];
+                                  // return Image.file(img);
+                                  return Card(
+                                    elevation: 10.0,
+                                    margin: EdgeInsets.all(2.0),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    child: Container(
+                                      child: Image.file(
+                                        img,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              )),
                   ],
                 )
               ],
