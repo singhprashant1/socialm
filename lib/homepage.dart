@@ -477,7 +477,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     Container(
                         height: SizeConfig.blockSizeVertical * 46,
-                        width: SizeConfig.blockSizeHorizontal * 90,
+                        width: SizeConfig.blockSizeHorizontal * 93,
                         // decoration: BoxDecoration(border: Border.all(width: 2)),
                         // padding: EdgeInsets.all(5),
                         child: imagearry.isEmpty
