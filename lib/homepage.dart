@@ -43,25 +43,22 @@ class _ProfilePageState extends State<ProfilePage> {
       _image = image;
     });
     if (_image != null) {
-      addImageToFirebase(_image, imagepath);
+      addImageToFirebase(_image);
       readData();
     } else {
       print("image is empty");
     }
   }
 
-  String imagepath;
   Future _imgFromGallery() async {
     final image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
 
     setState(() {
       _image = image;
-      imagepath = image.path.split('/').last;
-      print(imagepath);
     });
     if (_image != null) {
-      addImageToFirebase(_image, imagepath);
+      addImageToFirebase(_image);
       readData();
     } else {
       print("image is empty");
@@ -70,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   Reference storageReference = FirebaseStorage.instance.ref();
-  Future addImageToFirebase(File _image, String imagepath) async {
+  Future addImageToFirebase(File _image) async {
     //CreateRefernce to path.
     Reference ref = storageReference.child("Profilepic");
 
