@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:socialm/bottam%20navigation.dart';
+import 'package:socialm/homepage.dart';
 
 import 'SizedBox.dart';
 
@@ -26,8 +28,6 @@ class _AddImageState extends State<AddImage> {
     // imagearry.add(image);
     setState(() {
       _image = image;
-      addImageToFirebase(_image);
-      readData();
     });
   }
 
@@ -38,44 +38,45 @@ class _AddImageState extends State<AddImage> {
     // imagearry.add(image);
     setState(() {
       _image = image;
-      datee();
-      addImageToFirebase(_image);
-      readData();
+      // datee();
     });
     return date;
   }
 
-  Future datee() async {
-    DateTime now = new DateTime.now();
-    DateTime date = new DateTime(
-        now.year, now.month, now.day, now.hour, now.minute, now.second);
-    setState(() {
-      date = date;
-      print(date);
-    });
-    return date;
-  }
+  // Future datee() async {
+  //   DateTime now = new DateTime.now();
+  //   DateTime date = new DateTime(
+  //       now.year, now.month, now.day, now.hour, now.minute, now.second);
+  //   setState(() {
+  //     date = date;
+  //     print(date);
+  //   });
+  //   return date;
+  // }
 
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   Reference storageReference = FirebaseStorage.instance.ref();
-  Future addImageToFirebase(File _image) async {
+  Future addImageToFirebase(File _image, String username, String date) async {
     //CreateRefernce to path.
-    Reference ref = storageReference.child("Profilepic").child("images");
+    Reference ref = storageReference.child("Profilepic").child(username);
 
     //StorageUpload task is used to put the data you want in storage
     //Make sure to get the image first before calling this method otherwise _image will be null.
-
-    UploadTask storageUploadTask = ref.child(username).putFile(_image);
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy MM dd HH mm ss');
+    String formattedDate = formatter.format(now);
+    print(formattedDate); // 2016-01-25
+    User user = FirebaseAuth.instance.currentUser;
+    UploadTask storageUploadTask =
+        ref.child(user.uid + formattedDate).putFile(_image);
     TaskSnapshot taskSnapshot = await storageUploadTask;
     var imageUrl = await (await storageUploadTask).ref.getDownloadURL();
     String url = imageUrl.toString();
     print(url);
-    // User user = FirebaseAuth.instance.currentUser;
     databaseReference
-        .child("Cust")
         .child("images")
-        .child(date)
-        .set({"image": url, "usernamee": username});
+        .child(formattedDate)
+        .set({"image": url, "username": username});
     // readData();
     // String url = await ref.getDownloadURL();
     // print("The download URL is " + url);
@@ -107,7 +108,7 @@ class _AddImageState extends State<AddImage> {
     Firebase.initializeApp().whenComplete(() {
       print("completed");
       readData();
-      datee();
+      // datee();
       setState(() {});
     });
   }
@@ -132,7 +133,14 @@ class _AddImageState extends State<AddImage> {
                   width: SizeConfig.blockSizeHorizontal * 45,
                 ),
                 GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      addImageToFirebase(_image, username, date);
+                      readData();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottamNavy()));
+                    },
                     child: Icon(Icons.check, color: Colors.black)),
               ],
             )),

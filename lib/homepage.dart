@@ -25,15 +25,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final Duration duration = const Duration(milliseconds: 300);
   File _image;
-  List imagearry = [];
-  Future _imgFromGalary() async {
-    final image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50);
-    imagearry.add(image);
-    setState(() {
-      imagearry;
-    });
-  }
 
   Future _imgFromCamera() async {
     final image = await ImagePicker.pickImage(
@@ -106,6 +97,8 @@ class _ProfilePageState extends State<ProfilePage> {
           name = values["name"];
           username = values["username"];
           link = values["link"];
+          print(username);
+          readDataimage(username);
           // _loading = !_loading;
           print(values["name"]);
           setState(() {
@@ -113,6 +106,32 @@ class _ProfilePageState extends State<ProfilePage> {
               _enabled = false;
             }
           });
+        });
+      });
+    });
+  }
+
+  List imagearray = [];
+  String username1;
+  String imagearry;
+  // DatabaseReference user = FirebaseDatabase.instance.reference();
+  void readDataimage(String username) async {
+    print(username + "username");
+    final db = FirebaseDatabase.instance.reference().child("images");
+    User user = FirebaseAuth.instance.currentUser;
+    db
+        .orderByChild("username")
+        .equalTo(username)
+        .once()
+        .then((DataSnapshot snapshot) {
+      print(snapshot);
+      snapshot.value.forEach((key, values) {
+        setState(() {
+          username1 = values["username"];
+          print(username1);
+          imagearry = values["image"];
+          imagearray.add(imagearry);
+          // _loading = !_loading;
         });
       });
     });
@@ -460,7 +479,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           side: BorderSide(color: Colors.black)),
                       onPressed: () {
                         _loading = !_loading;
-                        _imgFromGalary();
                       },
                       child: Text(
                         "Edit Profile",
@@ -477,13 +495,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         width: SizeConfig.blockSizeHorizontal * 93,
                         // decoration: BoxDecoration(border: Border.all(width: 2)),
                         // padding: EdgeInsets.all(5),
-                        child: imagearry.isEmpty
+                        child: imagearray.isEmpty
                             ? Center(child: Text("No image"))
                             : GridView.count(
                                 crossAxisCount: 3,
                                 children:
-                                    List.generate(imagearry.length, (index) {
-                                  var img = imagearry[index];
+                                    List.generate(imagearray.length, (index) {
+                                  var img = imagearray[index];
                                   // return Image.file(img);
                                   return Card(
                                     elevation: 10.0,
@@ -492,7 +510,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         borderRadius:
                                             BorderRadius.circular(10.0)),
                                     child: Container(
-                                      child: Image.file(
+                                      child: Image.network(
                                         img,
                                         fit: BoxFit.fill,
                                       ),

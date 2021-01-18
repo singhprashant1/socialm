@@ -24,6 +24,7 @@ Future main() async {
     routes: {
       "/logout": (context) => LoginPage(),
       "/home": (context) => BottamNavy(),
+      "/profil": (context) => ProfilePage(),
     },
   ));
 }
