@@ -22,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _visible = true;
   var _loading = false;
   bool _enabled = true;
+  GlobalKey<RefreshIndicatorState> refreshKey;
 
   final Duration duration = const Duration(milliseconds: 300);
   File _image;
@@ -75,7 +76,6 @@ class _ProfilePageState extends State<ProfilePage> {
       "link": url,
     });
     readData();
-
     // String url = await ref.getDownloadURL();
     // print("The download URL is " + url);
   }
@@ -124,7 +124,6 @@ class _ProfilePageState extends State<ProfilePage> {
         .equalTo(username)
         .once()
         .then((DataSnapshot snapshot) {
-      print(snapshot);
       snapshot.value.forEach((key, values) {
         setState(() {
           username1 = values["username"];
@@ -148,9 +147,18 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<Null> refreshList() async {
+    await Future.delayed(Duration(seconds: 1));
+    imagearray.clear();
+    if (imagearray != null) {
+      readData();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    refreshKey = GlobalKey<RefreshIndicatorState>();
     Firebase.initializeApp().whenComplete(() {
       print("completed");
       readData();
@@ -490,34 +498,40 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    Container(
-                        height: SizeConfig.blockSizeVertical * 46,
-                        width: SizeConfig.blockSizeHorizontal * 93,
-                        // decoration: BoxDecoration(border: Border.all(width: 2)),
-                        // padding: EdgeInsets.all(5),
-                        child: imagearray.isEmpty
-                            ? Center(child: Text("No image"))
-                            : GridView.count(
-                                crossAxisCount: 3,
-                                children:
-                                    List.generate(imagearray.length, (index) {
-                                  var img = imagearray[index];
-                                  // return Image.file(img);
-                                  return Card(
-                                    elevation: 10.0,
-                                    margin: EdgeInsets.all(2.0),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    child: Container(
-                                      child: Image.network(
-                                        img,
-                                        fit: BoxFit.fill,
+                    RefreshIndicator(
+                      key: refreshKey,
+                      onRefresh: () async {
+                        await refreshList();
+                      },
+                      child: Container(
+                          height: SizeConfig.blockSizeVertical * 46,
+                          width: SizeConfig.blockSizeHorizontal * 93,
+                          // decoration: BoxDecoration(border: Border.all(width: 2)),
+                          // padding: EdgeInsets.all(5),
+                          child: imagearray.isEmpty
+                              ? Center(child: Text("No image"))
+                              : GridView.count(
+                                  crossAxisCount: 3,
+                                  children:
+                                      List.generate(imagearray.length, (index) {
+                                    var img = imagearray[index];
+                                    // return Image.file(img);
+                                    return Card(
+                                      elevation: 10.0,
+                                      margin: EdgeInsets.all(2.0),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: Container(
+                                        child: Image.network(
+                                          img,
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }),
-                              )),
+                                    );
+                                  }),
+                                )),
+                    ),
                   ],
                 )
               ],
