@@ -9,8 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:socialm/bottam%20navigation.dart';
-import 'package:socialm/homepage.dart';
-
 import 'SizedBox.dart';
 
 class AddImage extends StatefulWidget {
