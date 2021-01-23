@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:socialm/SizedBox.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialm/constent.dart';
+import 'package:socialm/editprofil.dart';
 import 'package:socialm/login.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -23,14 +24,11 @@ class _ProfilePageState extends State<ProfilePage> {
   var _loading = false;
   bool _enabled = true;
   GlobalKey<RefreshIndicatorState> refreshKey;
-
   final Duration duration = const Duration(milliseconds: 300);
   File _image;
-
   Future _imgFromCamera() async {
     final image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
-
     setState(() {
       _image = image;
     });
@@ -486,7 +484,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           borderRadius: BorderRadius.circular(8.0),
                           side: BorderSide(color: Colors.black)),
                       onPressed: () {
-                        _loading = !_loading;
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditProfile()));
                       },
                       child: Text(
                         "Edit Profile",
@@ -504,16 +505,17 @@ class _ProfilePageState extends State<ProfilePage> {
                         await refreshList();
                       },
                       child: Container(
-                          height: SizeConfig.blockSizeVertical * 46,
-                          width: SizeConfig.blockSizeHorizontal * 93,
-                          // decoration: BoxDecoration(border: Border.all(width: 2)),
-                          // padding: EdgeInsets.all(5),
-                          child: imagearray.isEmpty
-                              ? Center(child: Text("No image"))
-                              : GridView.count(
-                                  crossAxisCount: 3,
-                                  children:
-                                      List.generate(imagearray.length, (index) {
+                        height: SizeConfig.blockSizeVertical * 46,
+                        width: SizeConfig.blockSizeHorizontal * 93,
+                        // decoration: BoxDecoration(border: Border.all(width: 2)),
+                        // padding: EdgeInsets.all(5),
+                        child: imagearray.isEmpty
+                            ? Center(child: Text("No image"))
+                            : GridView.count(
+                                crossAxisCount: 3,
+                                children: List.generate(
+                                  imagearray.length,
+                                  (index) {
                                     var img = imagearray[index];
                                     // return Image.file(img);
                                     return Card(
@@ -529,11 +531,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                       ),
                                     );
-                                  }),
-                                )),
+                                  },
+                                ),
+                              ),
+                      ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ],

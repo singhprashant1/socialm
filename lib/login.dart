@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socialm/bottam%20navigation.dart';
 import 'package:socialm/constent.dart';
-import 'package:socialm/homepage.dart';
 import 'package:socialm/register.dart';
 import 'package:toast/toast.dart';
 
