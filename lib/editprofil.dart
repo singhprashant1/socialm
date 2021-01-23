@@ -17,6 +17,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   var _loading = false;
+  TextEditingController bioController = TextEditingController();
   File _image;
   Future _imgFromCamera() async {
     final image = await ImagePicker.pickImage(
@@ -62,9 +63,10 @@ class _EditProfileState extends State<EditProfile> {
     String url = imageUrl.toString();
     print(url);
     User user = FirebaseAuth.instance.currentUser;
-    databaseReference.child("Cust").child(user.uid).update({
-      "link": url,
-    });
+    databaseReference
+        .child("Cust")
+        .child(user.uid)
+        .update({"link": url, "Bio": bioController.text});
     readData();
     // String url = await ref.getDownloadURL();
     // print("The download URL is " + url);
@@ -202,7 +204,7 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         keyboardType: TextInputType.text,
-                        // controller: passController,
+                        controller: bioController,
                         obscureText: true,
                         validator: (value) {
                           if (value.isEmpty) {
