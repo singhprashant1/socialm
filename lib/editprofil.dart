@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -32,7 +31,6 @@ class _EditProfileState extends State<EditProfile> {
       print("image is empty");
     }
   }
-
   Future _imgFromGallery() async {
     final image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
@@ -47,16 +45,10 @@ class _EditProfileState extends State<EditProfile> {
       print("image is empty");
     }
   }
-
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   Reference storageReference = FirebaseStorage.instance.ref();
   Future addImageToFirebase(File _image) async {
-    //CreateRefernce to path.
     Reference ref = storageReference.child("Profilepic");
-
-    //StorageUpload task is used to put the data you want in storage
-    //Make sure to get the image first before calling this method otherwise _image will be null.
-
     UploadTask storageUploadTask = ref.child(username).putFile(_image);
     TaskSnapshot taskSnapshot = await storageUploadTask;
     var imageUrl = await (await storageUploadTask).ref.getDownloadURL();
@@ -68,8 +60,7 @@ class _EditProfileState extends State<EditProfile> {
         .child(user.uid)
         .update({"link": url, "Bio": bioController.text});
     readData();
-    // String url = await ref.getDownloadURL();
-    // print("The download URL is " + url);
+    
   }
 
   var name;
