@@ -17,6 +17,7 @@ class _ImageScreenState extends State<ImageScreen> {
         title: Text("HEy"),
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           Container(
             child: Image.network(

@@ -109,6 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List imagearray = [];
   String username1;
   String imagearry;
+  int count;
   // DatabaseReference user = FirebaseDatabase.instance.reference();
   void readDataimage(String username) async {
     print(username + "username");
@@ -125,6 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
           print(username1);
           imagearry = values["image"];
           imagearray.add(imagearry);
+          count = imagearray.length;
           // _loading = !_loading;
         });
       });
@@ -147,6 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
     imagearray.clear();
     if (imagearray != null) {
       readData();
+      setState(() {});
     }
   }
 
@@ -382,7 +385,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Column(
                   children: [
                     Text(
-                      "0",
+                      "$count",
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(color: Colors.black, fontSize: 16),
                       ),
