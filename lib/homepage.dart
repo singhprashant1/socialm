@@ -60,10 +60,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future addImageToFirebase(File _image) async {
     //CreateRefernce to path.
     Reference ref = storageReference.child("Profilepic");
-
-    //StorageUpload task is used to put the data you want in storage
-    //Make sure to get the image first before calling this method otherwise _image will be null.
-
     UploadTask storageUploadTask = ref.child(username).putFile(_image);
     TaskSnapshot taskSnapshot = await storageUploadTask;
     var imageUrl = await (await storageUploadTask).ref.getDownloadURL();
