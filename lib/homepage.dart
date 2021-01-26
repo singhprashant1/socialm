@@ -11,7 +11,9 @@ import 'package:socialm/SizedBox.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:socialm/constent.dart';
 import 'package:socialm/editprofil.dart';
+import 'package:socialm/imagescreen.dart';
 import 'package:socialm/login.dart';
+import 'package:toast/toast.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -93,7 +95,6 @@ class _ProfilePageState extends State<ProfilePage> {
           link = values["link"];
           print(username);
           readDataimage(username);
-          // _loading = !_loading;
           print(values["name"]);
           setState(() {
             if (username != null) {
@@ -514,16 +515,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                   (index) {
                                     var img = imagearray[index];
                                     // return Image.file(img);
-                                    return Card(
-                                      elevation: 10.0,
-                                      margin: EdgeInsets.all(2.0),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      child: Container(
-                                        child: Image.network(
-                                          img,
-                                          fit: BoxFit.fill,
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ImageScreen(number: img)));
+                                      },
+                                      child: Card(
+                                        elevation: 10.0,
+                                        margin: EdgeInsets.all(2.0),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
+                                        child: Container(
+                                          child: Image.network(
+                                            img,
+                                            fit: BoxFit.fill,
+                                          ),
                                         ),
                                       ),
                                     );
