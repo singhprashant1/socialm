@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:like_button/like_button.dart';
+import 'package:socialm/SizedBox.dart';
 
 class ImageScreen extends StatefulWidget {
   final number;
@@ -48,6 +50,7 @@ class _ImageScreenState extends State<ImageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -61,12 +64,60 @@ class _ImageScreenState extends State<ImageScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(
-            child: Image.network(
-              number,
-              fit: BoxFit.fill,
-            ),
-          )
+          Column(
+            children: [
+              Container(
+                height: SizeConfig.safeBlockHorizontal * 143,
+                width: SizeConfig.screenWidth,
+                child: Image.network(
+                  number,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Row(
+                children: [
+                  LikeButton(
+                    size: 40,
+                    circleColor: CircleColor(
+                        start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                    bubblesColor: BubblesColor(
+                      dotPrimaryColor: Color(0xff33b5e5),
+                      dotSecondaryColor: Color(0xff0099cc),
+                    ),
+                    likeBuilder: (bool isLiked) {
+                      return Icon(
+                        Icons.favorite,
+                        color: isLiked ? Colors.deepPurpleAccent : Colors.grey,
+                        size: 40,
+                      );
+                    },
+                    likeCount: 665,
+                    countBuilder: (int count, bool isLiked, String text) {
+                      var color =
+                          isLiked ? Colors.deepPurpleAccent : Colors.grey;
+                      Widget result;
+                      if (count == 0) {
+                        result = Text(
+                          "love",
+                          style: TextStyle(color: color),
+                        );
+                      } else
+                        result = Text(
+                          text,
+                          style: TextStyle(color: color),
+                        );
+                      return result;
+                    },
+                  ),
+                  Icon(
+                    Icons.comment_rounded,
+                    color: Colors.grey,
+                    size: 40,
+                  )
+                ],
+              )
+            ],
+          ),
         ],
       ),
     );
