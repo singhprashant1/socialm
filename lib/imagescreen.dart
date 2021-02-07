@@ -29,10 +29,9 @@ class _ImageScreenState extends State<ImageScreen> {
       snapshot.value.forEach((key, values) {
         setState(() {
           username = values["username"];
-
-          print(username);
+          link = values["link"];
+          print(link);
         });
-        return username;
       });
     });
   }
@@ -51,74 +50,97 @@ class _ImageScreenState extends State<ImageScreen> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          username != null ? "" + username.toString() : "loading",
-          style: GoogleFonts.montserrat(
-            textStyle: TextStyle(color: Colors.black, fontSize: 22),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: CircleAvatar(
+              backgroundColor: Colors.grey,
+              child: link != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(link,
+                          width: 50, height: 50, fit: BoxFit.fill),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(50)),
+                      width: 50,
+                      height: 50,
+                      child: Icon(
+                        Icons.person,
+                        size: 30,
+                        color: Colors.grey[800],
+                      ),
+                    )),
+          title: Text(
+            username != null ? "" + username.toString() : "loading",
+            style: GoogleFonts.montserrat(
+              textStyle: TextStyle(color: Colors.black, fontSize: 22),
+            ),
           ),
         ),
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Column(
-            children: [
-              Container(
-                height: SizeConfig.safeBlockHorizontal * 143,
-                width: SizeConfig.screenWidth,
-                child: Image.network(
-                  number,
-                  fit: BoxFit.fill,
-                ),
-              ),
-              Row(
-                children: [
-                  LikeButton(
-                    size: 40,
-                    circleColor: CircleColor(
-                        start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                    bubblesColor: BubblesColor(
-                      dotPrimaryColor: Color(0xff33b5e5),
-                      dotSecondaryColor: Color(0xff0099cc),
-                    ),
-                    likeBuilder: (bool isLiked) {
-                      return Icon(
-                        Icons.favorite,
-                        color: isLiked ? Colors.deepPurpleAccent : Colors.grey,
-                        size: 40,
-                      );
-                    },
-                    likeCount: 665,
-                    countBuilder: (int count, bool isLiked, String text) {
-                      var color =
-                          isLiked ? Colors.deepPurpleAccent : Colors.grey;
-                      Widget result;
-                      if (count == 0) {
-                        result = Text(
-                          "love",
-                          style: TextStyle(color: color),
-                        );
-                      } else
-                        result = Text(
-                          text,
-                          style: TextStyle(color: color),
-                        );
-                      return result;
-                    },
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            Column(
+              children: [
+                Container(
+                  height: SizeConfig.safeBlockHorizontal * 143,
+                  width: SizeConfig.screenWidth,
+                  child: Image.network(
+                    number,
+                    fit: BoxFit.fill,
                   ),
-                  Icon(
-                    Icons.comment_rounded,
-                    color: Colors.grey,
-                    size: 40,
-                  )
-                ],
-              )
-            ],
-          ),
-        ],
+                ),
+                Row(
+                  children: [
+                    LikeButton(
+                      size: 40,
+                      circleColor: CircleColor(
+                          start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                      bubblesColor: BubblesColor(
+                        dotPrimaryColor: Color(0xff33b5e5),
+                        dotSecondaryColor: Color(0xff0099cc),
+                      ),
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
+                          Icons.favorite,
+                          color:
+                              isLiked ? Colors.deepPurpleAccent : Colors.grey,
+                          size: 40,
+                        );
+                      },
+                      likeCount: 665,
+                      countBuilder: (int count, bool isLiked, String text) {
+                        var color =
+                            isLiked ? Colors.deepPurpleAccent : Colors.grey;
+                        Widget result;
+                        if (count == 0) {
+                          result = Text(
+                            "love",
+                            style: TextStyle(color: color),
+                          );
+                        } else
+                          result = Text(
+                            text,
+                            style: TextStyle(color: color),
+                          );
+                        return result;
+                      },
+                    ),
+                    Icon(
+                      Icons.comment_rounded,
+                      color: Colors.grey,
+                      size: 40,
+                    )
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

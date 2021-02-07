@@ -31,6 +31,7 @@ class _EditProfileState extends State<EditProfile> {
       print("image is empty");
     }
   }
+
   Future _imgFromGallery() async {
     final image = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 50);
@@ -45,6 +46,7 @@ class _EditProfileState extends State<EditProfile> {
       print("image is empty");
     }
   }
+
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   Reference storageReference = FirebaseStorage.instance.ref();
   Future addImageToFirebase(File _image) async {
@@ -60,8 +62,9 @@ class _EditProfileState extends State<EditProfile> {
         .child(user.uid)
         .update({"link": url, "Bio": bioController.text});
     readData();
-    
   }
+
+  Future update() async {}
 
   var name;
   var username;
@@ -196,7 +199,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         keyboardType: TextInputType.text,
                         controller: bioController,
-                        obscureText: true,
+                        // obscureText: true,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Enter a valid password!';
@@ -224,7 +227,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         keyboardType: TextInputType.text,
                         // controller: passController,
-                        obscureText: true,
+                        // obscureText: true,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Enter a valid password!';
@@ -242,7 +245,7 @@ class _EditProfileState extends State<EditProfile> {
                           borderRadius: BorderRadius.circular(24.0),
                         ),
                         child: Text(
-                          "Login",
+                          "Save",
                           style: TextStyle(color: Colors.white, fontSize: 20.0),
                         ),
                         onPressed: () {},
