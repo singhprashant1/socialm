@@ -37,7 +37,8 @@ class _ResisterPageState extends State<ResisterPage> {
       "username": userController.text,
       "email": emailController.text,
       "uid": user.uid,
-      "Bio": ""
+      "Bio": null,
+      "Web": null,
     });
 
     Navigator.push(

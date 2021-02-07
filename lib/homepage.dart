@@ -22,7 +22,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool isCollapsed = true;
-  bool _visible = true;
+  bool _visible = false;
+  bool _visible1 = false;
   var _loading = false;
   bool _enabled = true;
   GlobalKey<RefreshIndicatorState> refreshKey;
@@ -79,6 +80,8 @@ class _ProfilePageState extends State<ProfilePage> {
   var name;
   var username;
   var link;
+  var bio;
+  var web;
   // DatabaseReference user = FirebaseDatabase.instance.reference();
   void readData() async {
     final db = FirebaseDatabase.instance.reference().child("Cust");
@@ -93,12 +96,24 @@ class _ProfilePageState extends State<ProfilePage> {
           name = values["name"];
           username = values["username"];
           link = values["link"];
+          bio = values["Bio"];
+          web = values["Web"];
           print(username);
           readDataimage(username);
           print(values["name"]);
           setState(() {
             if (username != null) {
               _enabled = false;
+            }
+            if (bio != null) {
+              _visible = true;
+            } else {
+              _visible = false;
+            }
+            if (web != null) {
+              _visible1 = true;
+            } else {
+              _visible1 = false;
             }
           });
         });
@@ -383,7 +398,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Column(
                   children: [
                     Text(
-                      "$count",
+                      count != null ? "$count" : "00",
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(color: Colors.black, fontSize: 16),
                       ),
@@ -462,7 +477,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     Visibility(
                       child: Text(
-                        "Bio",
+                        "$bio",
                         style: GoogleFonts.montserrat(
                           textStyle: TextStyle(
                             color: Colors.black,
@@ -470,10 +485,19 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      // visible: _visible,
+                      visible: false,
+                    ),
+                    Visibility(
+                      visible: false,
+                      child: Text(
+                        "$web",
+                        style: GoogleFonts.montserrat(
+                          textStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                     ),
                     MaterialButton(
                       height: SizeConfig.blockSizeVertical * 5,

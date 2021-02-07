@@ -17,7 +17,9 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   var _loading = false;
   TextEditingController bioController = TextEditingController();
+  TextEditingController webController = TextEditingController();
   File _image;
+  // String _bio;
   Future _imgFromCamera() async {
     final image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
@@ -61,10 +63,18 @@ class _EditProfileState extends State<EditProfile> {
         .child("Cust")
         .child(user.uid)
         .update({"link": url, "Bio": bioController.text});
+    print(url);
     readData();
   }
 
-  Future update() async {}
+  Future update() async {
+    User user = FirebaseAuth.instance.currentUser;
+    await databaseReference
+        .child("Cust")
+        .child(user.uid)
+        .update({"Bio": bioController.text, "Web": webController.text});
+    print(bioController.text);
+  }
 
   var name;
   var username;
@@ -124,134 +134,141 @@ class _EditProfileState extends State<EditProfile> {
           body: Form(
             child: Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: SizeConfig.blockSizeVertical * 2),
-                      Center(
-                        child: GestureDetector(
-                          onLongPress: () {
-                            _showPicker(context);
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: SizeConfig.blockSizeVertical * 2),
+                        Center(
+                          child: GestureDetector(
+                            onLongPress: () {
+                              _showPicker(context);
+                            },
+                            // onTap: () {
+                            //   setState(() {
+                            //     _visible = !_visible;
+                            //   });
+                            // },
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.grey,
+                              child: link != null
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: Image.network(link,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.fill),
+                                    )
+                                  : _loading != true
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius:
+                                                  BorderRadius.circular(50)),
+                                          width: 100,
+                                          height: 100,
+                                          child: Icon(
+                                            Icons.person,
+                                            size: 40,
+                                            color: Colors.grey[800],
+                                          ),
+                                        )
+                                      : _circulerprogressIndicator(),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            "Edit Profile Photo",
+                            style: GoogleFonts.montserrat(
+                              textStyle:
+                                  TextStyle(color: Colors.orange, fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: SizeConfig.blockSizeVertical * 2),
+                        TextFormField(
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'Bio',
+                            prefixIcon: Icon(Icons.keyboard),
+                            contentPadding: const EdgeInsets.only(
+                                left: 14.0, bottom: 8.0, top: 8.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25.0),
+                              ),
+                            ),
+                          ),
+                          keyboardType: TextInputType.text,
+                          controller: bioController,
+                          // obscureText: true,
+                          onSaved: (String val) {
+                            if (val != null) {
+                              bioController.text = val;
+                            } else {
+                              print("bio is empty");
+                            }
                           },
-                          // onTap: () {
-                          //   setState(() {
-                          //     _visible = !_visible;
-                          //   });
-                          // },
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.grey,
-                            child: link != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: Image.network(link,
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.fill),
-                                  )
-                                : _loading != true
-                                    ? Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[200],
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
-                                        width: 100,
-                                        height: 100,
-                                        child: Icon(
-                                          Icons.person,
-                                          size: 40,
-                                          color: Colors.grey[800],
-                                        ),
-                                      )
-                                    : _circulerprogressIndicator(),
+                        ),
+                        SizedBox(height: SizeConfig.blockSizeVertical * 2),
+                        TextFormField(
+                          style: TextStyle(
+                            color: Colors.black,
                           ),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "Edit Profile Photo",
-                          style: GoogleFonts.montserrat(
-                            textStyle:
-                                TextStyle(color: Colors.orange, fontSize: 12),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: SizeConfig.blockSizeVertical * 2),
-                      TextFormField(
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'Bio',
-                          prefixIcon: Icon(Icons.keyboard),
-                          contentPadding: const EdgeInsets.only(
-                              left: 14.0, bottom: 8.0, top: 8.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(25.0),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintText: 'website',
+                            prefixIcon: Icon(Icons.keyboard),
+                            contentPadding: const EdgeInsets.only(
+                                left: 14.0, bottom: 8.0, top: 8.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25.0),
+                              ),
                             ),
                           ),
+                          keyboardType: TextInputType.text,
+                          controller: webController,
+                          onSaved: (String val) {
+                            if (val != null) {
+                              webController.text = val;
+                            } else {
+                              print("bio is empty");
+                            }
+                          },
+                          // obscureText: true,
                         ),
-                        keyboardType: TextInputType.text,
-                        controller: bioController,
-                        // obscureText: true,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Enter a valid password!';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: SizeConfig.blockSizeVertical * 2),
-                      TextFormField(
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'website',
-                          prefixIcon: Icon(Icons.keyboard),
-                          contentPadding: const EdgeInsets.only(
-                              left: 14.0, bottom: 8.0, top: 8.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(25.0),
-                            ),
+                        SizedBox(height: SizeConfig.blockSizeVertical * 35),
+                        MaterialButton(
+                          height: SizeConfig.blockSizeVertical * 8,
+                          minWidth: SizeConfig.blockSizeHorizontal * 100,
+                          color: Colors.blue[900],
+                          textColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24.0),
                           ),
+                          child: Text(
+                            "Save",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 20.0),
+                          ),
+                          onPressed: () {
+                            update();
+                          },
+                          splashColor: Colors.redAccent,
                         ),
-                        keyboardType: TextInputType.text,
-                        // controller: passController,
-                        // obscureText: true,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Enter a valid password!';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: SizeConfig.blockSizeVertical * 35),
-                      MaterialButton(
-                        height: SizeConfig.blockSizeVertical * 8,
-                        minWidth: SizeConfig.blockSizeHorizontal * 100,
-                        color: Colors.blue[900],
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0),
-                        ),
-                        child: Text(
-                          "Save",
-                          style: TextStyle(color: Colors.white, fontSize: 20.0),
-                        ),
-                        onPressed: () {},
-                        splashColor: Colors.redAccent,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )
               ],
